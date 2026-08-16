@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">Fjord</string>
-    <string name="greeting_title">Bonjour Fjord 👋</string>
-    <string name="user_name">Naz</string>
 </resources>
