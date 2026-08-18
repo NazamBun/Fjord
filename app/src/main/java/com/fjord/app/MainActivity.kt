@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -21,6 +22,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 
@@ -31,10 +36,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FjordTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HabitListScreen(
-                        habits = sampleHabits,
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    HabitListScreen(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -43,20 +45,32 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun HabitListScreen(habits: List<Habit>, modifier: Modifier = Modifier) {
+fun HabitListScreen(modifier: Modifier = Modifier) {
+    var habits by remember { mutableStateOf(sampleHabits) }   // LA source de vérité
+
     LazyColumn(modifier = modifier) {
-        items(habits) { habit ->
-            HabitItem(habit = habit)
+        items(habits, key = { it.id }) { habit ->
+            HabitItem(
+                habit = habit,
+                onToggle = {
+                    // on reconstruit une NOUVELLE liste : la bonne habitude est remplacée par sa copie inversée
+                    habits = habits.map { current ->
+                        if (current.id == habit.id) current.copy(isDone = !current.isDone)
+                        else current
+                    }
+                }
+            )
         }
     }
 }
 
 @Composable
-fun HabitItem(habit: Habit, modifier: Modifier = Modifier) {
+fun HabitItem(habit: Habit, onToggle: () -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onToggle() }        // on prévient le parent, c'est tout
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -69,15 +83,15 @@ fun HabitItem(habit: Habit, modifier: Modifier = Modifier) {
                 Text(text = habit.description, style = MaterialTheme.typography.bodySmall)
             }
             Spacer(Modifier.weight(1f))
-            Text(text = if (habit.isDone) "✅" else "⬜️")
+            Text(text = if (habit.isDone) "✅" else "⬜️")   // lit la vérité reçue
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun HabitListScreenPreview() {
     FjordTheme {
-        HabitListScreen(habits = sampleHabits)
+        HabitListScreen()
     }
 }
