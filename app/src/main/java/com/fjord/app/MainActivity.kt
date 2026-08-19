@@ -22,12 +22,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,20 +42,30 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun HabitListScreen(modifier: Modifier = Modifier) {
-    var habits by remember { mutableStateOf(sampleHabits) }   // LA source de vérité
+fun HabitListScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HabitViewModel = viewModel()
+) {
+    // partie branchée : elle récupère l'état du cerveau et le passe à la partie visuelle
+    HabitListContent(
+        habits = viewModel.habits,
+        onToggle = { id -> viewModel.toggleHabit(id) },
+        modifier = modifier
+    )
+}
 
+@Composable
+fun HabitListContent(
+    habits: List<Habit>,
+    onToggle: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // partie visuelle : ne connaît aucun ViewModel, juste des données et un callback
     LazyColumn(modifier = modifier) {
         items(habits, key = { it.id }) { habit ->
             HabitItem(
                 habit = habit,
-                onToggle = {
-                    // on reconstruit une NOUVELLE liste : la bonne habitude est remplacée par sa copie inversée
-                    habits = habits.map { current ->
-                        if (current.id == habit.id) current.copy(isDone = !current.isDone)
-                        else current
-                    }
-                }
+                onToggle = { onToggle(habit.id) }
             )
         }
     }
@@ -92,6 +99,6 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, modifier: Modifier = Modifier)
 @Composable
 fun HabitListScreenPreview() {
     FjordTheme {
-        HabitListScreen()
+        HabitListContent(habits = sampleHabits, onToggle = {})
     }
 }
