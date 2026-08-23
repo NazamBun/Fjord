@@ -1,21 +1,15 @@
 package com.fjord.app
 
 import android.app.Application
-import androidx.room.Room
-import com.fjord.app.data.FjordDatabase
-import com.fjord.app.data.HabitRepository
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class FjordApplication : Application() {
-
-    val database by lazy {
-        Room.databaseBuilder(
-            this,
-            FjordDatabase::class.java,
-            "fjord_database"
-        ).build()
-    }
-
-    val repository by lazy {
-        HabitRepository(database.habitDao())
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@FjordApplication)
+            modules(appModule)
+        }
     }
 }

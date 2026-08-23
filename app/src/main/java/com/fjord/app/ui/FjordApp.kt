@@ -9,16 +9,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fjord.app.FjordApplication
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun FjordApp() {
     val navController = rememberNavController()
-    val application = LocalContext.current.applicationContext as FjordApplication
-    val viewModel: HabitViewModel = viewModel(
-        factory = viewModelFactory {
-            initializer { HabitViewModel(application.repository) }
-        }
-    )
+    val viewModel: HabitViewModel = koinViewModel()
 
     NavHost(navController = navController, startDestination = "list") {
         composable("list") {
