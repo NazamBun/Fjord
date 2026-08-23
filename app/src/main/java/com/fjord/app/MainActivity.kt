@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import com.fjord.app.data.Habit
 import com.fjord.app.data.sampleHabits
+import com.fjord.app.ui.FjordApp
 import com.fjord.app.ui.HabitItem
 import com.fjord.app.ui.HabitListScreen
 
@@ -24,9 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FjordTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HabitListScreen(modifier = Modifier.padding(innerPadding))
-                }
+                FjordApp()
             }
         }
     }
