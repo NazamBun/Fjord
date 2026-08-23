@@ -1,6 +1,8 @@
-package com.fjord.app
+package com.fjord.app.ui
 
 import androidx.lifecycle.ViewModel
+import com.fjord.app.data.Habit
+import com.fjord.app.data.sampleHabits
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,4 +1,4 @@
-package com.fjord.app
+package com.fjord.app.data
 
 data class Habit(
     val id: Int,
