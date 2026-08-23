@@ -29,4 +29,8 @@ class HabitViewModel : ViewModel() {
         )
         _habits.value = _habits.value + newHabit
     }
+
+    fun deleteHabit(id: Int) {
+        _habits.value = _habits.value.filter { it.id != id }
+    }
 }

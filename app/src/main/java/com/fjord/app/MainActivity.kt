@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.fjord.app.ui.theme.FjordTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fjord.app.data.Habit
 import com.fjord.app.data.sampleHabits
 import com.fjord.app.ui.FjordApp
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
 fun HabitListContent(
     habits: List<Habit>,
     onToggle: (Int) -> Unit,
+    onDelete: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // partie visuelle : ne connaît aucun ViewModel, juste des données et un callback
@@ -43,7 +45,8 @@ fun HabitListContent(
         items(habits, key = { it.id }) { habit ->
             HabitItem(
                 habit = habit,
-                onToggle = { onToggle(habit.id) }
+                onToggle = { onToggle(habit.id) },
+                onDelete = { onDelete(habit.id) }
             )
         }
     }
@@ -53,6 +56,10 @@ fun HabitListContent(
 @Composable
 fun HabitListScreenPreview() {
     FjordTheme {
-        HabitListContent(habits = sampleHabits, onToggle = {})
+        HabitListContent(
+            habits = sampleHabits,
+            onToggle = {},
+            onDelete = {}
+        )
     }
 }

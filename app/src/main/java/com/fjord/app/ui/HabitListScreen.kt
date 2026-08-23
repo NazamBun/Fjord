@@ -30,6 +30,7 @@ fun HabitListScreen(
         HabitListContent(
             habits = habits,
             onToggle = { id -> viewModel.toggleHabit(id) },
+            onDelete = { id -> viewModel.deleteHabit(id) },
             modifier = Modifier.padding(innerPadding)
         )
     }

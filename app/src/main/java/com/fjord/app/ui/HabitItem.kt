@@ -17,7 +17,12 @@ import androidx.compose.ui.unit.dp
 import com.fjord.app.data.Habit
 
 @Composable
-fun HabitItem(habit: Habit, onToggle: () -> Unit, modifier: Modifier = Modifier.Companion) {
+fun HabitItem(
+    habit: Habit,
+    onToggle: () -> Unit,
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -35,7 +40,12 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, modifier: Modifier = Modifier.
                 Text(text = habit.description, style = MaterialTheme.typography.bodySmall)
             }
             Spacer(Modifier.Companion.weight(1f))
-            Text(text = if (habit.isDone) "✅" else "⬜️")   // lit la vérité reçue
+            Text(text = if (habit.isDone) "✅" else "⬜️")
+            Spacer(Modifier.width(12.dp))
+            Text(
+                text = "🗑️",
+                modifier = Modifier.clickable { onDelete() }
+            )
         }
     }
 }
