@@ -1,0 +1,9 @@
+package com.fjord.app.data
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+
+@Database(entities = [Habit::class], version = 1)
+abstract class FjordDatabase : RoomDatabase() {
+    abstract fun habitDao(): HabitDao
+}

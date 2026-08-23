@@ -16,7 +16,7 @@ import com.fjord.app.HabitListContent
 fun HabitListScreen(
     onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HabitViewModel = viewModel()
+    viewModel: HabitViewModel
 ) {
     val habits by viewModel.habits.collectAsState()
     Scaffold(

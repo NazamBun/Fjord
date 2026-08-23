@@ -1,36 +1,42 @@
 package com.fjord.app.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.fjord.app.data.Habit
-import com.fjord.app.data.sampleHabits
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.fjord.app.data.HabitRepository
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class HabitViewModel : ViewModel() {
+class HabitViewModel(private val repository: HabitRepository) : ViewModel() {
 
-    private val _habits = MutableStateFlow(sampleHabits)
-    val habits: StateFlow<List<Habit>> = _habits.asStateFlow()
+    val habits: StateFlow<List<Habit>> = repository.allHabits
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
-    fun toggleHabit(id: Int) {
-        _habits.value = _habits.value.map { habit ->
-            if (habit.id == id) habit.copy(isDone = !habit.isDone) else habit
+    fun addHabit(name: String) {
+        viewModelScope.launch {
+            repository.insert(
+                Habit(name = name, description = "", icon = "📝", isDone = false)
+            )
         }
     }
 
-    fun addHabit(name: String) {
-        val newId = (_habits.value.maxOfOrNull { it.id } ?: 0) + 1
-        val newHabit = Habit(
-            id = newId,
-            name = name,
-            description = "",
-            icon = "📝",
-            isDone = false
-        )
-        _habits.value = _habits.value + newHabit
+    fun toggleHabit(id: Int) {
+        viewModelScope.launch {
+            val habit = habits.value.find { it.id == id } ?: return@launch
+            repository.update(habit.copy(isDone = !habit.isDone))
+        }
     }
 
     fun deleteHabit(id: Int) {
-        _habits.value = _habits.value.filter { it.id != id }
+        viewModelScope.launch {
+            val habit = habits.value.find { it.id == id } ?: return@launch
+            repository.delete(habit)
+        }
     }
 }
