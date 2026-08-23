@@ -22,6 +22,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,9 +48,10 @@ fun HabitListScreen(
     modifier: Modifier = Modifier,
     viewModel: HabitViewModel = viewModel()
 ) {
-    // partie branchée : elle récupère l'état du cerveau et le passe à la partie visuelle
+    val habits by viewModel.habits.collectAsState()   // on écoute le StateFlow
+
     HabitListContent(
-        habits = viewModel.habits,
+        habits = habits,
         onToggle = { id -> viewModel.toggleHabit(id) },
         modifier = modifier
     )

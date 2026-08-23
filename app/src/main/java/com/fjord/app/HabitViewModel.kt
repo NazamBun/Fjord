@@ -1,17 +1,17 @@
 package com.fjord.app
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class HabitViewModel : ViewModel() {
 
-    var habits by mutableStateOf(sampleHabits)
-        private set
+    private val _habits = MutableStateFlow(sampleHabits)
+    val habits: StateFlow<List<Habit>> = _habits.asStateFlow()
 
     fun toggleHabit(id: Int) {
-        habits = habits.map { habit ->
+        _habits.value = _habits.value.map { habit ->
             if (habit.id == id) habit.copy(isDone = !habit.isDone) else habit
         }
     }
